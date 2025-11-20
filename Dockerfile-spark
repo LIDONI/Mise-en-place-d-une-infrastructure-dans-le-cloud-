@@ -1,0 +1,18 @@
+# Dockerfile-spark
+FROM eclipse-temurin:11-jdk-focal
+
+WORKDIR /app
+
+# Installer Python et pip
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    rm -rf /var/lib/apt/lists/*
+
+# Installer PySpark
+RUN pip3 install pyspark==3.5.2
+
+COPY spark_streaming_processor.py .
+
+CMD ["python3", "spark_streaming_processor.py"]
+
+

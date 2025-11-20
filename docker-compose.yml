@@ -1,0 +1,74 @@
+version: "3.9"
+
+name: projet9-streaming
+
+networks:
+  redpanda_network:
+    driver: bridge
+
+volumes:
+  redpanda-0: {}
+
+services:
+  # ------------------------------------------------------
+  # REDPANDA (Kafka compatible)
+  # ------------------------------------------------------
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v25.2.9
+    container_name: redpanda
+    command:
+      - redpanda
+      - start
+      - --kafka-addr internal://0.0.0.0:9092,external://0.0.0.0:19092
+      - --advertise-kafka-addr internal://redpanda:9092,external://localhost:19092
+      - --mode dev-container
+      - --smp 1
+    networks: [redpanda_network]
+    volumes:
+      - redpanda-0:/var/lib/redpanda/data
+    ports:
+      - "19092:19092"
+      - "9644:9644"
+
+  # ------------------------------------------------------
+  # Redpanda Console (UI web)
+  # ------------------------------------------------------
+  console:
+    image: docker.redpanda.com/redpandadata/console:v3.2.2
+    container_name: redpanda-console
+    depends_on: [redpanda]
+    networks: [redpanda_network]
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["redpanda:9092"]
+    entrypoint: /bin/sh
+    command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
+    ports:
+      - "8080:8080"
+
+  # ------------------------------------------------------
+  # PRODUCER (Python -> Kafka topic)
+  # ------------------------------------------------------
+  producer:
+    build:
+      context: .
+      dockerfile: Dockerfile-producer
+    container_name: ticket-producer
+    depends_on: [redpanda]
+    networks: [redpanda_network]
+
+  # ------------------------------------------------------
+  # SPARK STREAMING CONSUMER
+  # ------------------------------------------------------
+  spark:
+    build:
+      context: .
+      dockerfile: Dockerfile-spark
+    container_name: spark-streaming
+    depends_on: [redpanda]
+    networks: [redpanda_network]
+    volumes:
+      - ./spark_output:/data/output
+      - ./spark_checkpoints:/data/checkpoints

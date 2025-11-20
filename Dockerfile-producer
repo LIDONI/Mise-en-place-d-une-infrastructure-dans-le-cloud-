@@ -1,0 +1,11 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY producer_tickets.py .
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD ["python", "producer_tickets.py"]
+
