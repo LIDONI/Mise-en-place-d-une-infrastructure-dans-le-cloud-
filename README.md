@@ -1,4 +1,8 @@
-# Description
+# Redpanda Ticket Streaming Pipeline
+
+![Python](https://img.shields.io/badge/Python-3.9+-blue?logo=python)
+![PySpark](https://img.shields.io/badge/PySpark-4.0+-orange?logo=apache-spark)
+[![Démo LinkedIn](https://img.shields.io/badge/Démo-LinkedIn-blue?logo=linkedin)](https://www.linkedin.com/in/khalid-ouro-adoyi/)
 
 **Cette application illustre une pipeline ETL en temps réel utilisant :**
 
@@ -78,7 +82,6 @@ Si vous utilisez Redpanda en local :
 - **La console** pour visualisation en temps réel.
 
 - **Des fichiers JSON** sur disque avec checkpointing pour tolérance aux pannes.
-
 
 ## Auteur
 
