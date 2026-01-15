@@ -63,10 +63,15 @@ Si vous utilisez Redpanda en local :
 ## Structure du projet
 
 ├── produer_tickets.py         # Producteur Kafka / Redpanda
+
 ├── spark_streaming_processor.py  # Traitement Spark Streaming
+
 ├── requirements.txt           # Dépendances Python
+
 ├── README.md                  # Documentation
+
 ├── /data/output               # Fichiers JSON générés
+
 └── /data/checkpoints          # Checkpoints Spark
 
 # **Flux de données (Pipeline ETL)**
